@@ -34,3 +34,37 @@ Consider carrying around nuts in a plastic jar or small baggie wherever you go s
 <a href="#top" target="_self">back</a>
   </div>
 </body>
+setCopyright: function() {
+    /* 设置版权信息，转载出处自动根据页面url生成
+     * window.location.href：读取当前url
+     */ 
+    var info_str = '<p>作者：<a>@geektutu</a><br>'+
+        '本文为作者原创，转载请注明出处：<a class="uri"></a></p><hr></hr>', 
+        info = $(info_str),
+        info_a = info.find("a"),
+        url = window.location.href; 
+    $(info_a[0]).attr("href","https://github.com/geektutu");
+    $(info_a[1]).attr("href",url).text(url);
+    $("#cnblogs_post_body").prepend(info);
+},
+setContent: function() {
+    // 根据h2、h3标签自动生成目录
+    var captions_ori = $("#cnblogs_post_body h2"),
+        captions = $("#cnblogs_post_body h2,#cnblogs_post_body h3").clone(),
+        content = $("<blockquote><h4>目录</h4></blockquote>");
+    $("#cnblogs_post_body").prepend(content.append(captions));
+    var index = -1;
+    captions.replaceWith(function(){
+        var self = this;
+        if(self.tagName == "H2" || self.tagName == "h2"){
+            // 设置点击目录跳转
+            index += 1;
+            $('<a name="' + '_caption_' + index + '"></a>')
+                .insertBefore(captions_ori[index]); 
+            return '<a href="#_caption_' + index + '"><strong>' +
+                self.innerHTML + '</strong></a><br>';
+        } else {
+            return self.innerHTML + "<br>";
+        }
+    });
+},
